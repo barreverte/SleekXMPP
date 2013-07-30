@@ -606,7 +606,8 @@ class XMLStream(object):
             resp = ''
             while '\r\n\r\n' not in resp and not self.stop.is_set():
                 resp += self.socket.recv(1024).decode('utf-8')
-            log.debug('RECV: %s', resp)
+            if log.isEnabledFor(logging.DEBUG):
+                log.debug('RECV: %s', resp)
 
             lines = resp.split('\r\n')
             if '200' not in lines[0]:
@@ -1276,7 +1277,8 @@ class XMLStream(object):
                                Defaults to :attr:`auto_reconnect`.
         """
         if now:
-            log.debug("SEND (IMMED): %s", data)
+            if log.isEnabledFor(logging.DEBUG):
+                log.debug("SEND (IMMED): %s", data)
             try:
                 data = data.encode('utf-8')
                 total = len(data)
@@ -1485,10 +1487,11 @@ class XMLStream(object):
                 if depth == 0:
                     # We have received the start of the root element.
                     root = xml
-                    log.debug('RECV: %s', tostring(root, xmlns=self.default_ns,
-                                                         stream=self,
-                                                         top_level=True,
-                                                         open_only=True))
+                    if log.isEnabledFor(logging.DEBUG):
+                        log.debug('RECV: %s', tostring(root, xmlns=self.default_ns,
+                                                             stream=self,
+                                                             top_level=True,
+                                                             open_only=True))
                     # Perform any stream initialization actions, such
                     # as handshakes.
                     self.stream_end_event.clear()
@@ -1562,7 +1565,8 @@ class XMLStream(object):
         if stanza is None:
             return
 
-        log.debug("RECV: %s", stanza)
+        if log.isEnabledFor(logging.DEBUG):
+            log.debug("RECV: %s", stanza)
 
         # Match the stanza against registered handlers. Handlers marked
         # to run "in stream" will be executed immediately; the rest will
@@ -1692,7 +1696,8 @@ class XMLStream(object):
                         data = self.send_queue.get(True, 1)
                     except QueueEmpty:
                         continue
-                log.debug("SEND: %s", data)
+                if log.isEnabledFor(logging.DEBUG):
+                    log.debug("SEND: %s", data)
                 enc_data = data.encode('utf-8')
                 total = len(enc_data)
                 sent = 0
