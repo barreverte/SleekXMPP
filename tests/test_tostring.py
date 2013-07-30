@@ -1,7 +1,7 @@
 from sleekxmpp.test import *
 from sleekxmpp.stanza import Message
 from sleekxmpp.xmlstream.stanzabase import ET, ElementBase
-from sleekxmpp.xmlstream.tostring import tostring, escape
+from sleekxmpp.xmlstream.tostring import tostring
 
 
 class TestToString(SleekTest):
@@ -26,16 +26,6 @@ class TestToString(SleekTest):
             xml=original
         result = tostring(xml, **kwargs)
         self.failUnless(result == expected, "%s: %s" % (message, result))
-
-    def testXMLEscape(self):
-        """Test escaping XML special characters."""
-        original = """<foo bar="baz">'Hi & welcome!'</foo>"""
-        escaped = escape(original)
-        desired = """&lt;foo bar=&quot;baz&quot;&gt;&apos;Hi"""
-        desired += """ &amp; welcome!&apos;&lt;/foo&gt;"""
-
-        self.failUnless(escaped == desired,
-            "XML escaping did not work: %s." % escaped)
 
     def testEmptyElement(self):
         """Test converting an empty element to a string."""
