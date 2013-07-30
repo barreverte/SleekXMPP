@@ -77,6 +77,7 @@ RECONNECT_MAX_ATTEMPTS = None
 
 
 log = logging.getLogger(__name__)
+is_debug_enabled = log.isEnabledFor(logging.DEBUG)
 
 
 class RestartStream(Exception):
@@ -606,7 +607,7 @@ class XMLStream(object):
             resp = ''
             while '\r\n\r\n' not in resp and not self.stop.is_set():
                 resp += self.socket.recv(1024).decode('utf-8')
-            if log.isEnabledFor(logging.DEBUG):
+            if is_debug_enabled:
                 log.debug('RECV: %s', resp)
 
             lines = resp.split('\r\n')
@@ -1277,7 +1278,7 @@ class XMLStream(object):
                                Defaults to :attr:`auto_reconnect`.
         """
         if now:
-            if log.isEnabledFor(logging.DEBUG):
+            if is_debug_enabled:
                 log.debug("SEND (IMMED): %s", data)
             try:
                 data = data.encode('utf-8')
@@ -1487,7 +1488,7 @@ class XMLStream(object):
                 if depth == 0:
                     # We have received the start of the root element.
                     root = xml
-                    if log.isEnabledFor(logging.DEBUG):
+                    if is_debug_enabled:
                         log.debug('RECV: %s', tostring(root, xmlns=self.default_ns,
                                                              stream=self,
                                                              top_level=True,
@@ -1565,7 +1566,7 @@ class XMLStream(object):
         if stanza is None:
             return
 
-        if log.isEnabledFor(logging.DEBUG):
+        if is_debug_enabled:
             log.debug("RECV: %s", stanza)
 
         # Match the stanza against registered handlers. Handlers marked
@@ -1696,7 +1697,7 @@ class XMLStream(object):
                         data = self.send_queue.get(True, 1)
                     except QueueEmpty:
                         continue
-                if log.isEnabledFor(logging.DEBUG):
+                if is_debug_enabled:
                     log.debug("SEND: %s", data)
                 enc_data = data.encode('utf-8')
                 total = len(enc_data)
