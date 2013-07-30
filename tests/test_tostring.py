@@ -1,8 +1,12 @@
+from xml.etree.ElementTree import register_namespace
+import sys
 from sleekxmpp.test import *
 from sleekxmpp.stanza import Message
 from sleekxmpp.xmlstream.stanzabase import ET, ElementBase
 from sleekxmpp.xmlstream.tostring import tostring
 
+
+register_namespace('', 'foo')
 
 class TestToString(SleekTest):
 
@@ -19,11 +23,11 @@ class TestToString(SleekTest):
         expected result.
         """
         if not expected:
-            expected=original
+            expected = original
         if isinstance(original, str):
             xml = ET.fromstring(original)
         else:
-            xml=original
+            xml = original
         result = tostring(xml, **kwargs)
         self.failUnless(result == expected, "%s: %s" % (message, result))
 
@@ -82,8 +86,7 @@ class TestToString(SleekTest):
         self.stream_start()
 
         utf8_message = '\xe0\xb2\xa0_\xe0\xb2\xa0'
-        if not hasattr(utf8_message, 'decode'):
-            # Python 3
+        if sys.version_info >= (3, 0):
             utf8_message = bytes(utf8_message, encoding='utf-8')
         msg = self.Message()
         msg['body'] = utf8_message.decode('utf-8')

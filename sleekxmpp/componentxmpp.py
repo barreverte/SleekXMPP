@@ -147,9 +147,8 @@ class ComponentXMPP(BaseXMPP):
             # Handle Unicode byte encoding in Python 3.
             pre_hash = bytes(pre_hash, 'utf-8')
 
-        handshake = ET.Element('{jabber:component:accept}handshake')
-        handshake.text = hashlib.sha1(pre_hash).hexdigest().lower()
-        self.send_xml(handshake, now=True)
+        handshake = '<handshake xmlns="jabber:component:accept">%s</handshake>' % hashlib.sha1(pre_hash).hexdigest().lower()
+        self.send_raw(handshake, now=True)
 
     def _handle_handshake(self, xml):
         """The handshake has been accepted.
