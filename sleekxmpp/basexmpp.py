@@ -38,11 +38,6 @@ from sleekxmpp.plugins import PluginManager, load_plugin
 
 log = logging.getLogger(__name__)
 
-# In order to make sure that Unicode is handled properly
-# in Python 2.x, reset the default encoding.
-if sys.version_info < (3, 0):
-    from sleekxmpp.util.misc_ops import setdefaultencoding
-    setdefaultencoding('utf8')
 
 
 class BaseXMPP(XMLStream):
